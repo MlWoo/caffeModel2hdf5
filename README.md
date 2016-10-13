@@ -12,5 +12,5 @@ to replace them with "\_".
 Plz refer to t googlenet.lua to load weights and bias.
 
 ## source 
-The project comes from Kencoken. And dump_network_hdf5.cpp is copy from it. The Link is (https://github.com/kencoken/caffe-model-conver)
+The project comes from Kencoken. And dump_network_hdf5.cpp is copyed from it. The Link is (https://github.com/kencoken/caffe-model-conver)
 
