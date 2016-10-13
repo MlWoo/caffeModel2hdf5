@@ -3,7 +3,7 @@
 ##Target 
 Load weights and bias from caffe to Torch
 
-1. save caffe model to a common file appended with caffemodel such as bvlc\_google.caffemodel
+1. save caffe model to a common file appended with caffemodel such as bvlc\_googlenet.caffemodel
 2. convert caffemodel file to hdf5 file
 3. load weights and bias form hdf5 file in Torch
 
