@@ -8,6 +8,7 @@ Load weights and bias from caffe to Torch
 3. load weights and bias from hdf5 file in Torch
 
 Load input layer data from caffe to Torch
+
 1. after net completes forward operation, the data will be fed to net. And copy data to the dataLayer's top blob
 2. save dataLayer's top blob to hdf5 file
 3. load weights and bias from hdf5 file in Torch
