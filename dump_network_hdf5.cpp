@@ -15,11 +15,11 @@
 #include "caffe/util/hdf5.hpp"
 #include "caffe/layers/inner_product_layer.hpp"
 #include "caffe/layers/conv_layer.hpp"
-
+#include "caffe/layers/data_layer.hpp"
 using namespace caffe;  // NOLINT(build/namespaces)
 
 void dump_weight_bias(hid_t &h5file, Layer<float> *layer, const string& layer_name, const string& weight_name);
-
+void dump_single_blob(hid_t &h5file, Blob<float>* blob,  const string& blob_name);
 int main(int argc, char** argv) {
   caffe::GlobalInit(&argc, &argv);
   Caffe::set_mode(Caffe::CPU);
@@ -40,14 +40,24 @@ int main(int argc, char** argv) {
   shared_ptr<Net<float> > caffe_net;
   caffe_net.reset(new Net<float>(network_params, caffe::TRAIN));
   caffe_net->CopyTrainedLayersFrom(network_snapshot);
-
+  
   const vector<shared_ptr<Layer<float> > >& layers = caffe_net->layers();
   const vector<string> & layer_names = caffe_net->layer_names();
- 
+  
+  float loss = 0;
+  caffe_net->Forward(&loss); //after data layer completes forward operation, it will load a batch and copy data blob to top.
+
   for (int i = 0; i < layer_names.size(); ++i) {
-    if (InnerProductLayer<float> *layer = dynamic_cast<InnerProductLayer<float> *>(layers[i].get())) {
+   
+    if (DataLayer<float> *layer = dynamic_cast<DataLayer<float> *>(layers[i].get())) {
+      LOG(ERROR) << "Dumping DataLayer " << layer_names[i];
+      
+      const  vector<vector<Blob<float>* > >& top_vecs_ = caffe_net->top_vecs();
+      float blob_sum = (top_vecs_[i][0])->asum_data();
+        
+      dump_single_blob(file_id, (top_vecs_[i][0]), string("InputLayer"));
+    } else if (InnerProductLayer<float> *layer = dynamic_cast<InnerProductLayer<float> *>(layers[i].get())) {
       LOG(ERROR) << "Dumping InnerProductLayer " << layer_names[i];
-      printf("Dumping InnerProductLayer\n");
       dump_weight_bias(file_id, layer, layer_names[i], string("weight"));
     } else if (ConvolutionLayer<float> *layer = dynamic_cast<ConvolutionLayer<float> *>(layers[i].get())) {
       LOG(ERROR) << "Dumping ConvolutionLayer " << layer_names[i];
@@ -59,6 +69,18 @@ int main(int argc, char** argv) {
 
   H5Fclose(file_id);
   return 0;
+}
+
+void dump_single_blob(hid_t &h5file, Blob<float>* blob,  const string& blob_name)
+{
+    if(NULL == blob)
+    {
+        LOG(ERROR) << "Input layer Error!!!";
+        exit(1);
+    }
+    
+    hdf5_save_nd_dataset(h5file, blob_name, *blob, false);
+
 }
 
 void dump_weight_bias(hid_t &h5file, Layer<float> *layer, const string& layer_name, const string& weight_name) {
