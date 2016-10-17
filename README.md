@@ -1,16 +1,16 @@
 # caffeModel2hdf5
 
 ##Target 
-1. Load weights and bias from caffe to Torch
+Load weights and bias from caffe to Torch
 
-(1). save caffe model to a common file appended with caffemodel such as bvlc\_googlenet.caffemodel
-(2). convert caffemodel file to hdf5 file
-(3). load weights and bias from hdf5 file in Torch
+1. save caffe model to a common file appended with caffemodel such as bvlc\_googlenet.caffemodel
+2. convert caffemodel file to hdf5 file
+3. load weights and bias from hdf5 file in Torch
 
-2. Load input layer data from caffe to Torch
-(1). after net completes forward operation, the data will be fed to net. And copy data to the dataLayer's top blob
-(2). save dataLayer's top blob to hdf5 file
-(3). load weights and bias from hdf5 file in Torch
+Load input layer data from caffe to Torch
+1. after net completes forward operation, the data will be fed to net. And copy data to the dataLayer's top blob
+2. save dataLayer's top blob to hdf5 file
+3. load weights and bias from hdf5 file in Torch
 
 ## Install and convert caffemodel to  hdf5 
 1. copy the folder to your caffe directory and run the install script
